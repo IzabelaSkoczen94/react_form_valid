@@ -26,7 +26,7 @@ class App extends Component {
       accept_incorect: " Nie potwierdzona zgoda"
   }
 
-  // funkcja do obslugi pol formularza
+  // funkcja do obslugi pól formularza
   handleChange = (e) => {
     //name - username, email, password
     const name = e.target.name;
@@ -52,9 +52,87 @@ class App extends Component {
 
     //domysle wysylanie
     e.preventDefault()
-    console.log("dziala")
+
+    //-----------------
+    const validation = this.formValidation()
+    //-----------------
+    console.log(validation)
+
+    //funkcja zwracjąca odpowiedz czy pozytywna czy negatywna
+    if(validation.correct) {
+      //wyzerowanie
+      this.setState({
+          username: '',
+          email: '',
+          password: '',
+          accept: false,
+      
+          errors: {
+            username: false,
+            email: false,
+            password: false,
+            accept: false,
+        }
+      })
+    } else {
+      this.setState({
+        errors: {
+          username: true,
+          email: true,
+          password: true,
+          accept: true,
+      }
+      })
+      console.log("Formularz wysłany")
+    }
   }
 
+  formValidation = () => {
+    //do zmiennych przypisuje bo chce te dane później przetwarzać
+    let username = false;
+    let email = false;
+    let password = false;
+    let accept = false;
+    //czy formularz jest ok
+    let correct = false;
+
+    //username
+    //index Of 1 lub -1 zwraca (gdy nie ma spacji -1, gdy sa jakies znaki albo spacja od 1 w gore)
+    if(this.state.username.length > 10 && this.state.username.indexOf(' ') === -1)
+    {
+      username = true
+    }
+
+    //email (indexOf gdy -1  to znaczy ze nie ma
+    if(this.state.email.indexOf('@') !== -1 && this.state.username.indexOf(' ') === -1)
+    {
+      email = true
+    }
+
+    //password
+    if(this.state.password.length === 8) {
+      password = true
+    }
+
+    //accept
+    if(this.state.accept) {
+        accept = true
+    }
+
+    //correct 
+    if(username && email  && password && accept)
+    {
+      correct = true
+    }
+
+    return ({
+
+      errors: {
+        username, email, correct, accept, password
+    }
+    })
+
+  }
 
   render() {
   return (
